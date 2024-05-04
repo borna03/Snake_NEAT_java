@@ -11,7 +11,9 @@ public class GamePanel extends JPanel{
     int pointX = 50;
     int pointY = 50;
     private final int GRID_GAP = 20;
-    private Snake snake;
+    private final Snake snake;
+    private static final int FPS = 60;
+    private static final long FRAME_TIME = 1000/FPS;
 
     public GamePanel(){
         setBackground(Color.decode("#434242"));
@@ -20,6 +22,8 @@ public class GamePanel extends JPanel{
         requestFocusInWindow(true);
         SnakeKeyListener snakeKeyListener = new SnakeKeyListener(snake, GRID_GAP, this);
         addKeyListener(snakeKeyListener);
+
+        startGameLoop();
 
     }
 
@@ -42,8 +46,34 @@ public class GamePanel extends JPanel{
         g.setColor(Color.decode("#222222"));
         g.fillRect(pointX, pointY, PANEL_WIDTH, PANEL_HEIGHT);
         drawGrid(g);
-        snake.draw(g);
-
+        snake.drawSnake(g);
     }
 
+    private void startGameLoop(){
+        new Thread(() -> {
+            int fps = 0;
+            while(true){
+                fps +=1;
+                if (fps%10==0) {
+                    System.out.println("1 Frame");
+                    updateGame();
+                    snake.updateDirection();
+                    fps = 0;
+                }
+                try {
+                    Thread.sleep(Math.max(0, FRAME_TIME));
+                } catch (InternalError e){
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }).start();
+    }
+
+    public void updateGame(){
+        snake.move();
+        this.repaint();
+    }
 }

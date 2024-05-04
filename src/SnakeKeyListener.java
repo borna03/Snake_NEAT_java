@@ -15,11 +15,19 @@ public class SnakeKeyListener implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if (keyCode == KeyEvent.VK_D) {
-            snake.move(gridGap, 0);
-            gamePanel.repaint(); // Repaint the GamePanel after the snake moves
+        BodyPart head = snake.getHead();
+
+        switch (keyCode) {
+            case KeyEvent.VK_W -> snake.changeDirection(head, 0);
+            case KeyEvent.VK_D -> snake.changeDirection(head, 1);
+            case KeyEvent.VK_S -> snake.changeDirection(head, 2);
+            case KeyEvent.VK_A -> snake.changeDirection(head, 3);
+            case KeyEvent.VK_SPACE -> {
+                snake.addBodyPart();
+            }
         }
     }
+
 
     @Override
     public void keyTyped(KeyEvent e) {
