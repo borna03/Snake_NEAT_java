@@ -6,16 +6,18 @@ class BodyPart {
     public int direction;
     Color color;
 
-
     public BodyPart(int x, int y, int dir){
         this.x = x;
         this.y = y;
         this.direction = dir;
-        this.color = Color.GREEN;
+        this.color = Color.decode("#8ae429");
     }
 
-    public void drawPart(Graphics g, int moveSize){
+    public void drawPart(Graphics g, int moveSize, boolean head){
         g.setColor(color);
+        if(head){
+            g.setColor(Color.decode("#6bb120"));
+        }
         g.fillRect(50+ x*moveSize, 50+y*moveSize, moveSize, moveSize);
     }
 

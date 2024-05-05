@@ -2,15 +2,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class SnakeKeyListener implements KeyListener {
-    private Snake snake;
-//    private int gridGap;
-//    private GamePanel gamePanel;
+    private final Snake snake;
 
     public SnakeKeyListener(Snake snake) {
         this.snake = snake;
-//        this.gridGap = gridGap;
-//        this.gamePanel = gamePanel;
-        // , int gridGap, GamePanel gamePanel
     }
 
     @Override
@@ -28,7 +23,6 @@ public class SnakeKeyListener implements KeyListener {
             }
         }
     }
-
 
     @Override
     public void keyTyped(KeyEvent e) {

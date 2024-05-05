@@ -4,12 +4,15 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class Snake {
-
     public final int moveSize;
     ArrayList<BodyPart> bodyParts = new ArrayList<>();
+    int PANEL_HEIGHT;
+    int PANEL_WIDTH;
 
-    public Snake(int x, int y, int size, Color color) {
+    public Snake(int x, int y, int size, Color color, int PANEL_WIDTH, int PANEL_HEIGHT) {
         this.moveSize = size;
+        this.PANEL_WIDTH = PANEL_WIDTH/20;
+        this.PANEL_HEIGHT = PANEL_HEIGHT/20;
         bodyParts.add(new BodyPart(x, y,1));
 
     }
@@ -22,8 +25,10 @@ public class Snake {
     }
 
     public void drawSnake(Graphics g){
-        for (BodyPart part: bodyParts) {
-            part.drawPart(g, moveSize);
+        for (int i = 0; i < bodyParts.size(); i++) {
+            BodyPart part = bodyParts.get(i);
+            boolean isFirstPart = (i == 0);
+            part.drawPart(g, moveSize, isFirstPart);
         }
     }
 
@@ -42,25 +47,36 @@ public class Snake {
         part.direction = direction;
     }
 
-    public void checkCollision() {
+    public boolean checkCollision() {
         BodyPart head = bodyParts.get(0);
-//        if (head.x )
+        if (head.x < 0 || head.x >= PANEL_WIDTH || head.y < 0 || head.y >= PANEL_HEIGHT) {
+            return false;
+        }
+
+        return true;
     }
 
-    public void updateDirection(){
+    public boolean updateDirection() {
         int prev = 0;
+        BodyPart head = null;
         for (int i = 0; i < bodyParts.size(); i++) {
-            if (bodyParts.size() != 1){
+            if (bodyParts.size() != 1) {
                 BodyPart part = bodyParts.get(i);
-                if (i == 0){
+                if (i == 0) {
                     prev = part.direction;
+                    head = part;
                 } else {
                     int prev_temp = part.direction;
                     part.direction = prev;
                     prev = prev_temp;
+
+                    if (head.x == part.x && head.y == part.y) {
+                        return false;
+                    }
                 }
             }
         }
+        return true;
     }
 
     public BodyPart getHead(){

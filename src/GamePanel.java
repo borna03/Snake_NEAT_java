@@ -1,47 +1,46 @@
-import javax.swing.JPanel;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class GamePanel extends JPanel{
-    private final int PANEL_WIDTH = 700;
-    private final int PANEL_HEIGHT = 700;
-    int pointX = 50;
-    int pointY = 50;
-    private final int GRID_GAP = 20;
+public class GamePanel extends JPanel {
+    private final int PANEL_WIDTH = 700, PANEL_HEIGHT = 700, GRID_GAP = 20, render = 10;
+    private static final int FPS = 120;
+    int pointX = 50, pointY = 50, score = 0;
     private final Snake snake;
     public Food food;
-    private static final int FPS = 120;
-    private static final long FRAME_TIME = 1000/FPS;
 
-    public final int borderXL = 0;
-    public final int borderXR = PANEL_WIDTH/GRID_GAP;
-    public final int borderYT = 0;
-    public final int borderYB = PANEL_HEIGHT/GRID_GAP;
+    private static final long FRAME_TIME = 1000 / FPS;
 
+    JLabel label = new JLabel("Score: " + score);
 
-    public GamePanel(){
-        System.out.println(borderXR + " _________ " + borderYB);
+    public GamePanel() {
+        // Set the layout manager to null
+        setLayout(null);
 
         setBackground(Color.decode("#434242"));
-        snake = new Snake(2, 2, GRID_GAP, Color.BLUE);
+        snake = new Snake(2, 2, GRID_GAP, Color.BLUE, PANEL_WIDTH, PANEL_HEIGHT);
         food = new Food(snake);
         food.generateFood();
+
+        // Add label creation and setup here
+        label.setFont(new Font("Arial", Font.PLAIN, 20));
+        label.setForeground(Color.BLACK); // Set the text color to black
+        label.setBounds(800, 50, 100, 50);
+        add(label);
+
         setFocusable(true);
         requestFocusInWindow(true);
         SnakeKeyListener snakeKeyListener = new SnakeKeyListener(snake);
         addKeyListener(snakeKeyListener);
 
         startGameLoop();
-
     }
 
     private void drawGrid(Graphics g) {
         g.setColor(Color.decode("#272829"));
 
-        for (int x = pointX; x<= pointX+PANEL_WIDTH; x+= GRID_GAP) {
+        for (int x = pointX; x <= pointX + PANEL_WIDTH; x += GRID_GAP) {
             g.drawLine(x, pointY, x, pointY + PANEL_HEIGHT);
         }
 
@@ -51,7 +50,7 @@ public class GamePanel extends JPanel{
     }
 
     @Override
-    protected void paintComponent(Graphics g){
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Draw game
         g.setColor(Color.decode("#222222"));
@@ -61,22 +60,37 @@ public class GamePanel extends JPanel{
         food.drawFood(g);
     }
 
-    private void startGameLoop(){
+    private void startGameLoop() {
         new Thread(() -> {
             int fps = 0;
-            while(true){
-                fps +=1;
-                if (fps%10==0) {
-//                    System.out.println("1 Frame");
+            while (true) {
+                fps += 1;
+
+                if (fps % render == 0) {
                     updateGame();
-                    snake.updateDirection();
+                    if (!snake.updateDirection()) {
+                        score = 0;
+                        SwingUtilities.invokeLater(() -> label.setText("Score: " + score));
+                        break;
+                    }
                     fps = 0;
                     food.print();
+
+                    if (!snake.checkCollision()) {
+                        score = 0;
+                        SwingUtilities.invokeLater(() -> label.setText("Score: " + score));
+                        break;
+                    }
+
+                    SwingUtilities.invokeLater(() -> label.setText("Score: " + score));
+
                 }
-                food.checkCollision();
+                if (food.checkCollision()) {
+                    score += 1;
+                }
                 try {
                     Thread.sleep(Math.max(0, FRAME_TIME));
-                } catch (InternalError e){
+                } catch (InternalError e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -86,7 +100,7 @@ public class GamePanel extends JPanel{
         }).start();
     }
 
-    public void updateGame(){
+    public void updateGame() {
         snake.move();
         this.repaint();
     }
