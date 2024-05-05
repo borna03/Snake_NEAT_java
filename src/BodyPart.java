@@ -16,18 +16,18 @@ class BodyPart {
 
     public void drawPart(Graphics g, int moveSize){
         g.setColor(color);
-        g.fillRect(x, y, moveSize, moveSize);
+        g.fillRect(50+ x*moveSize, 50+y*moveSize, moveSize, moveSize);
     }
 
     public void partMove(int moveSize){
         if (direction == 0) {
-            y -= moveSize;
+            y -= 1;
         } else if (direction == 1) {
-            x += moveSize;
+            x += 1;
         } else if (direction == 2) {
-            y += moveSize;
+            y += 1;
         } else{
-            x -= moveSize;
+            x -= 1;
         }
     }
 

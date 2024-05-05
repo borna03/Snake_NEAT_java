@@ -4,16 +4,13 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class Snake {
-    private final int x;
-    private final int y;
-    private final int moveSize;
+
+    public final int moveSize;
     ArrayList<BodyPart> bodyParts = new ArrayList<>();
 
     public Snake(int x, int y, int size, Color color) {
-        this.x = x;
-        this.y = y;
         this.moveSize = size;
-        bodyParts.add(new BodyPart(x+ 2*moveSize, y+2*moveSize,1));
+        bodyParts.add(new BodyPart(x, y,1));
 
     }
 
@@ -34,19 +31,20 @@ public class Snake {
         int tailIndex = bodyParts.size() - 1;
         BodyPart tail = bodyParts.get(tailIndex);
         switch (tail.direction) {
-            case 0 -> bodyParts.add(new BodyPart(tail.x, tail.y + moveSize, tail.direction));
-            case 1 -> bodyParts.add(new BodyPart(tail.x - moveSize, tail.y, tail.direction));
-            case 2 -> bodyParts.add(new BodyPart(tail.x, tail.y - moveSize, tail.direction));
-            case 3 -> bodyParts.add(new BodyPart(tail.x + moveSize, tail.y, tail.direction));
+            case 0 -> bodyParts.add(new BodyPart(tail.x, tail.y + 1, tail.direction));
+            case 1 -> bodyParts.add(new BodyPart(tail.x - 1, tail.y, tail.direction));
+            case 2 -> bodyParts.add(new BodyPart(tail.x, tail.y - 1, tail.direction));
+            case 3 -> bodyParts.add(new BodyPart(tail.x + 1, tail.y, tail.direction));
         }
-    }
-
-    public ArrayList<BodyPart> getBordyParts(){
-        return bodyParts;
     }
 
     public void changeDirection(BodyPart part,int direction){
         part.direction = direction;
+    }
+
+    public void checkCollision() {
+        BodyPart head = bodyParts.get(0);
+//        if (head.x )
     }
 
     public void updateDirection(){
@@ -67,13 +65,5 @@ public class Snake {
 
     public BodyPart getHead(){
         return bodyParts.get(0);
-    }
-
-    public int getX(){
-        return x;
-    }
-
-    public int getY(){
-        return y;
     }
 }

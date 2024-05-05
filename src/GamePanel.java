@@ -12,15 +12,26 @@ public class GamePanel extends JPanel{
     int pointY = 50;
     private final int GRID_GAP = 20;
     private final Snake snake;
-    private static final int FPS = 60;
+    public Food food;
+    private static final int FPS = 120;
     private static final long FRAME_TIME = 1000/FPS;
 
+    public final int borderXL = 0;
+    public final int borderXR = PANEL_WIDTH/GRID_GAP;
+    public final int borderYT = 0;
+    public final int borderYB = PANEL_HEIGHT/GRID_GAP;
+
+
     public GamePanel(){
+        System.out.println(borderXR + " _________ " + borderYB);
+
         setBackground(Color.decode("#434242"));
-        snake = new Snake(pointX, pointY, GRID_GAP, Color.BLUE);
+        snake = new Snake(2, 2, GRID_GAP, Color.BLUE);
+        food = new Food(snake);
+        food.generateFood();
         setFocusable(true);
         requestFocusInWindow(true);
-        SnakeKeyListener snakeKeyListener = new SnakeKeyListener(snake, GRID_GAP, this);
+        SnakeKeyListener snakeKeyListener = new SnakeKeyListener(snake);
         addKeyListener(snakeKeyListener);
 
         startGameLoop();
@@ -47,6 +58,7 @@ public class GamePanel extends JPanel{
         g.fillRect(pointX, pointY, PANEL_WIDTH, PANEL_HEIGHT);
         drawGrid(g);
         snake.drawSnake(g);
+        food.drawFood(g);
     }
 
     private void startGameLoop(){
@@ -55,11 +67,13 @@ public class GamePanel extends JPanel{
             while(true){
                 fps +=1;
                 if (fps%10==0) {
-                    System.out.println("1 Frame");
+//                    System.out.println("1 Frame");
                     updateGame();
                     snake.updateDirection();
                     fps = 0;
+                    food.print();
                 }
+                food.checkCollision();
                 try {
                     Thread.sleep(Math.max(0, FRAME_TIME));
                 } catch (InternalError e){

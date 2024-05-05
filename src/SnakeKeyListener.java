@@ -3,13 +3,14 @@ import java.awt.event.KeyListener;
 
 public class SnakeKeyListener implements KeyListener {
     private Snake snake;
-    private int gridGap;
-    private GamePanel gamePanel;
+//    private int gridGap;
+//    private GamePanel gamePanel;
 
-    public SnakeKeyListener(Snake snake, int gridGap, GamePanel gamePanel) {
+    public SnakeKeyListener(Snake snake) {
         this.snake = snake;
-        this.gridGap = gridGap;
-        this.gamePanel = gamePanel;
+//        this.gridGap = gridGap;
+//        this.gamePanel = gamePanel;
+        // , int gridGap, GamePanel gamePanel
     }
 
     @Override
