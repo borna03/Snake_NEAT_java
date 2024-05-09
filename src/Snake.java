@@ -17,13 +17,6 @@ public class Snake {
 
     }
 
-    public void move() {
-        for (BodyPart part: bodyParts) {
-            part.partMove(moveSize);
-        }
-        // System.out.println("Moved");
-    }
-
     public void drawSnake(Graphics g){
         for (int i = 0; i < bodyParts.size(); i++) {
             BodyPart part = bodyParts.get(i);
@@ -49,19 +42,16 @@ public class Snake {
 
     public boolean checkCollision() {
         BodyPart head = bodyParts.get(0);
-        if (head.x < 0 || head.x >= PANEL_WIDTH || head.y < 0 || head.y >= PANEL_HEIGHT) {
-            return false;
-        }
-
-        return true;
+        return head.x >= 0 && head.x < PANEL_WIDTH && head.y >= 0 && head.y < PANEL_HEIGHT;
     }
 
     public boolean updateDirection() {
         int prev = 0;
         BodyPart head = null;
         for (int i = 0; i < bodyParts.size(); i++) {
+            BodyPart part = bodyParts.get(i);
+            part.partMove(moveSize);
             if (bodyParts.size() != 1) {
-                BodyPart part = bodyParts.get(i);
                 if (i == 0) {
                     prev = part.direction;
                     head = part;

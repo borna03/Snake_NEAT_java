@@ -101,7 +101,7 @@ public class GamePanel extends JPanel {
     }
 
     public void updateGame() {
-        snake.move();
+        //snake.move();
         this.repaint();
     }
 }
